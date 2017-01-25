@@ -1,13 +1,9 @@
 defmodule HelloNerves do
 
-
   def start(_type, _args) do
-    exec = "#{:code.priv_dir(:nerves_neopixel)}/rpi_ws281x"
-    port = Port.open({:spawn_executable, exec}, [{:args, ["18", "1", "24", "1"]}, {:packet, 2}, :use_stdio, :binary])
-    send port, {self, {:command, :erlang.term_to_binary( {0, {254, <<254::size(8), 254::size(8), 254::size(8), 0x00::size(8)>> }} )}}
-:timer.sleep 1000
-    send port, {self, {:command, :erlang.term_to_binary( {1, {254, <<254::size(8), 254::size(8), 254::size(8), 0x00::size(8)>> }} )}}
-
+    #Nerves.Neopixel.start_link([pin: 18, count: 3])
+    Nerves.Neopixel.start_link([pin: 18, count: 1])
+    spawn fn -> shifty_pixels() end
 
     led_list = Application.get_env(:blinky, :led_list)
     spawn fn -> blink_list_forever(led_list) end
@@ -20,6 +16,19 @@ defmodule HelloNerves do
     File.write('/sys/class/leds/led0/brightness','0')
     :timer.sleep 300
     blink_list_forever(led_list)
+  end
+
+  defp shifty_pixels() do
+    #Nerves.Neopixel.render({127, [{127, 0, 0}, {0, 127, 0}, {0, 0, 127}]})
+    Nerves.Neopixel.render({127, [{127, 0, 0}]})
+    :timer.sleep 1000
+    #Nerves.Neopixel.render({127, [{0, 0, 127}, {127, 0, 0}, {0, 127, 0}]})
+    Nerves.Neopixel.render({127, [{0, 127, 0}]})
+    :timer.sleep 1000
+    #Nerves.Neopixel.render({127, [{0, 127, 0}, {0, 0, 127}, {127, 0, 0}]})
+    Nerves.Neopixel.render({127, [{0, 0, 127}]})
+    :timer.sleep 1000
+    shifty_pixels()
   end
 
 end

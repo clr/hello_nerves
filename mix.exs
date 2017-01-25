@@ -5,7 +5,7 @@ defmodule HelloNerves.Mixfile do
 
   def project do
     [app: :hello_nerves,
-     version: "0.1.0",
+     version: "0.2.0",
      target: @target,
      archives: [nerves_bootstrap: "~> 0.2.1"],
      
@@ -25,14 +25,8 @@ defmodule HelloNerves.Mixfile do
     [mod: {HelloNerves, []},
      applications: [
        :logger,
-       :nerves,
-       :nerves_system_rpi3,
-       :nerves_system_br,
-       :nerves_toolchain_arm_unknown_linux_gnueabihf,
-       :nerves_toolchain_ctng,
        :nerves_leds,
        :nerves_neopixel,
-       :elixir_make
      ]]
   end
 
@@ -45,7 +39,7 @@ defmodule HelloNerves.Mixfile do
   end
 
   def system(target) do
-    [{:"nerves_system_#{target}", ">= 0.0.0"}]
+    [{:"nerves_system_#{target}", "~> 0.9"}]
   end
 
   def aliases do
